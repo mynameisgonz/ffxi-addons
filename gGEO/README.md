@@ -8,19 +8,61 @@
 			<table>
 				<tr>
 					<td>ggeo indi [str]</td>
-					<td>-sets your indi luopan</td>
+					<td>sets your indi luopan</td>
 				</tr>
 				<tr>
 					<td>ggeo geo [str]</td>
-					<td>-sets your geo luopan</td>
+					<td>sets your geo luopan</td>
 				</tr>
 				<tr>
 					<td>ggeo geo target [str]</td>
-					<td>-sets your geo target</td>
+					<td>sets your geo target</td>
 				<tr>
 					<td>ggeo geo range [str]</td>
-					<td>-sets the range target can get before recast</td>					
+					<td>sets the range target can get before recast</td>					
 				</tr>
+				<tr>
+					<td>ggeo entrust [str]</td>
+					<td>sets your entrust luopan</td>
+				<tr>
+					<td>ggeo entrust target [str]</td>
+					<td>sets your entrust target</td>
+				<tr>
+					<td>ggeo lc player [str]</td>
+					<td>sets LC player HP threshold</td>
+				<tr>
+					<td>ggeo lc pet [str]</td>
+					<td>sets LC luopan HP threshold</td>
+				<tr>
+					<td>ggeo dematerialize hp [str]</td>
+					<td>sets Dematerialize player HP threshold</td>
+				<tr>
+					<td>ggeo follow target [str]</td>
+					<td>set your follow target</td>
+				<tr>
+					<td>ggeo follow range [str]</td>
+					<td>set your follow range</td>
+				<tr>
+					<td>ggeo combat target [str]</td>
+					<td>set your combat check target</td>
+				<tr>
+					<td>ggeo profile save</td>
+					<td>saves to current profile</td>
+				<tr>
+					<td>ggeo profile save [str]</td>
+					<td>saves to existing profile or creates new</td>
+				<tr>
+					<td>ggeo profile load [str]</td>
+					<td>loads a profile</td>
+				<tr>
+					<td>ggeo profile delete</td>
+					<td>deletes the currently profile</td>
+				<tr>
+					<td>ggeo profile delete [str]</td>
+					<td>deletes the specified profile</td>
+				<tr>
+					<td>ggeo profile default</td>
+					<td>loads the default profile</td>
 			</table>
 		</td>
 	</tr>
