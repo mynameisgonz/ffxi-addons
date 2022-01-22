@@ -1,1 +1,1 @@
-# ffxi-addons
+# gGEO - FFXI Geo Bot
