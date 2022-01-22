@@ -1,7 +1,7 @@
 # gGEO - FFXI Geo Bot
-<div style="overflow:hidden;display:block;">
-	<div style="overflow:hidden;">
-		<img style="float:left" src="https://i.imgur.com/jWqFHQ9.png"></img>
-		<p style="float:left;">gGEO is a windower addon that automates bots for multi-box purposes.</p>
-	</div>
-</div>
+<table>
+	<tr>
+		<td><img style="float:left" src="https://i.imgur.com/jWqFHQ9.png"></img>
+		<td>gGEO is a windower addon that automates bots for multi-box purposes.</td>
+	</tr>
+</table>
