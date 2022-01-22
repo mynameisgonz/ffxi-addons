@@ -1,9 +1,9 @@
 # gGEO - FFXI Geo Bot
 <table>
 	<tr>
-		<td width="300"><img style="float:left" src="https://i.imgur.com/jWqFHQ9.png"></img>
+		<td width="300"><img src="https://i.imgur.com/jWqFHQ9.png"></img><br/><img src="https://i.imgur.com/AVEQCi0.png"></img>
 		<td>
-			<p>gGEO is a windower addon that automates bots for multi-box purposes. The addon supports profiles to quickly switch between settings.</p>
+			<p>gGEO is a windower addon that automates bots for multi-box purposes. The addon supports profiles to quickly switch between settings. On-screen button presses allows you to start/stop and manage the addon without chat commands. You can also minimize the addon to reclaim screen space.</p>
 			<h3>Installation Instructions</h3>
 			<p>Place the gGEO folder in your windower addons folders. <br/><b>NOTE:</b> Please make sure to download <a href="https://github.com/mynameisgonz/ffxi-addons/tree/main/libs/gLibs">gLibs</a> and place in the addons/libs folder as my addons require them!</p>
 			<h3>Available Commands</h3>

@@ -83,6 +83,7 @@
     </global>
     <meledine>
         <current>meledine</current>
+        <minimized>true</minimized>
         <window_pos>
             <x>761</x>
             <y>856</y>
