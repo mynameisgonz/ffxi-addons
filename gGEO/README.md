@@ -5,7 +5,9 @@
 		<td>
 			<p>gGEO is a windower addon that automates bots for multi-box purposes. The addon supports profiles to quickly switch between settings.</p>
 			<h3>Available Commands</h3>
-			
+			<ul>
+				<li>ggeo indi [str] -sets your indi luopan</li>
+			</ul>
 		</td>
 	</tr>
 </table>
