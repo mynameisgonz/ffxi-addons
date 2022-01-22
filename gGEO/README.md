@@ -3,7 +3,7 @@
 	<div style="float:left;width:250px;">
 		<img src="https://i.imgur.com/jWqFHQ9.png"></img>
 	</div>
-	<div style="float:right;">
+	<div style="float:right;width:600px;">
 		<p>why</p>
 	</div>
 </div>
