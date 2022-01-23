@@ -52,6 +52,7 @@ function set_busy_to_false()
 	end
 end
 
+last_spell = nil
 -- determine if player is busy
 windower.register_event('action', function(act)
 	if act.actor_id == player().id then
@@ -74,12 +75,17 @@ windower.register_event('action', function(act)
 			coroutine.schedule(set_busy_to_false, 2)
 		-- BEGIN spell
 		elseif act.category == 08 then
-			busy = true
-			debug("Using Spell")
-
+			if act.param == 24931 then
+				busy = true
+				debug("Using Spell")			
+			else
+				debug("Spell Interrupted/Failed")
+				coroutine.schedule(set_busy_to_false, 2)
+			end
 		-- END spell
 		elseif act.category == 04 then
 			debug("Finished Spell")
+			last_spell = act.param
 			coroutine.schedule(set_busy_to_false, 2)
 		-- BEGIN item
 		elseif act.category == 09 then

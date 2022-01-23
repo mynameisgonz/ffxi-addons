@@ -13,7 +13,7 @@ images = require('images')
 -- used to debug. should be normally set to false
 debugging = false
 local moving = false
-
+local loaded = false
 local me = player()
 
 -- create default settings
@@ -28,7 +28,7 @@ def = {
 		entrust = {luopan = "Regen",target=me.name,active=true},
 		life_cycle = {player_hp=75,luopan_hp=50,active=true},
 		dematerialize = {hp=75,active=true},
-		follow = {target=me.name,range=1,active=false},
+		follow = {target=me.name,range=1,active=true},
 		combat_check = {target=me.name,active=true}
 	}}
 }
@@ -98,7 +98,7 @@ function draw_gui()
 	toggles[3] = {object=new_image(0,0,25,15,'img/on.png',{0,0,0},false),anchor=7,toggled=true}		-- entrust
 	toggles[4] = {object=new_image(0,0,25,15,'img/on.png',{0,0,0},false),anchor=10,toggled=true}	-- life cycle
 	toggles[5] = {object=new_image(0,0,25,15,'img/on.png',{0,0,0},false),anchor=13,toggled=true}	-- dematerialize
-	toggles[6] = {object=new_image(0,0,25,15,'img/off.png',{0,0,0},false),anchor=15,toggled=false}	-- follow
+	toggles[6] = {object=new_image(0,0,25,15,'img/off.png',{0,0,0},false),anchor=15,toggled=true}	-- follow
 	toggles[7] = {object=new_image(0,0,25,15,'img/on.png',{0,0,0},false),anchor=18,toggled=true}	-- in-combat only
 	
 	for _,btn in ipairs(toggles) do
@@ -129,6 +129,7 @@ function update_values()
 	toggle_button(toggles[7],false,'on','off')
 	
 	gui[7].object:text("Profile: [" .. color_text(options.current_profile,255,255,255) .. "]")
+	windower.send_command("fastfollow min " .. options.follow_range)
 end
 
 function reposition_gui()
@@ -200,120 +201,118 @@ function resize_gui()
 end
 
 function do_stuff()
-	if gui[3].toggled then
-		coroutine.schedule(do_stuff, 3)
-		-- combat engaged check
-		if toggles[7].toggled then
-			local target = windower.ffxi.get_mob_by_name(options.combat_target)
-			if target and target.status == 1 then
+	if loaded then
+		if gui[3].toggled then
+			coroutine.schedule(do_stuff, 3)
+			-- combat engaged check
+			if toggles[7].toggled then
+				local target = mob(options.combat_target)
+				if target and target.status == 1 then
+					bot()
+				end
+			else
 				bot()
 			end
-		else
-			bot()
+			
+			return
 		end
-		
-		return
 	end
 end
 
-local last_target = nil
+local hate_target = {id=nil,on_hate_list=false}
 function bot()
-	-- is GEO moving?
-	if moving == false then
-		me = player()
-		--is an indi luopan up?
-		if toggles[1].toggled then
-			if has_buff(me.buffs,612) == false then
-				cast_spell(me,"me","Indi-" .. options.indi_luopan)
-				return
-			end
+	me = player()
+
+	--is an indi luopan up?
+	if toggles[1].toggled then
+		if has_buff(me.buffs,612) == false then
+			cast_spell(me,"me","Indi-" .. options.indi_luopan)
+			return
 		end
+	end
 			
-		-- is a geo luopan up?
-		if toggles[2].toggled then
-			local geo_target_mob = mob(options.geo_target)
-			local pet = mob('pet')
-		
-			if pet then
-				--is the target far from the luopan?
-				if in_range(geo_target_mob,pet,options.geo_range) == false then
-					use_ability(me,"me","Full Circle")
-					return
-				else
-					-- is the luopan under the dematerialize hp threshold?
-					if toggles[4].toggled then
-						if pet.hpp <= options.dematerialize_hp then
-							use_ability("me","Dematerialize")
-							return
-						end
-					end
-					
-					-- is the loupon under the life cycle hp threshold?
-					if toggles[5].toggled then
-						if me.vitals["hpp"] >= options.lc_player_hp and pet.hpp <= options.lc_pet_hp then
-							use_ability(me,"me","Life Cycle")
-							return
-						end
-					end
-				end			
+	-- is a geo luopan up?
+	if toggles[2].toggled then
+		local geo_target_mob = mob(options.geo_target)
+		local pet = mob('pet')
+	
+		if pet then
+			--is the target far from the luopan?
+			if in_range(geo_target_mob,pet,options.geo_range) == false then
+				use_ability(me,"me","Full Circle")
+				return
 			else
-				if in_range(geo_target_mob,me.mob,12) then
-					-- is the luopan enemy-only?
-					local t = options.geo_target
-					if options.geo_luopan == "Wilt" or options.geo_luopan == "Frailty" or options.geo_luopan == "Fade" or options.geo_luopan == "Malaise" or options.geo_luopan == "Slip" or options.geo_luopan == "Torpor" or options.geo_luopan == "Vex" or options.geo_luopan == "Languor" or options.geo_luopan == "Slow" or options.geo_luopan == "Paralysis" then 
-						t = "bt"
+				-- is the luopan under the dematerialize hp threshold?
+				if toggles[4].toggled then
+					if pet.hpp <= options.dematerialize_hp then
+						use_ability("me","Dematerialize")
+						return
 					end
+				end
+				
+				-- is the loupon under the life cycle hp threshold?
+				if toggles[5].toggled then
+					if me.vitals["hpp"] >= options.lc_player_hp and pet.hpp <= options.lc_pet_hp then
+						use_ability(me,"me","Life Cycle")
+						return
+					end
+				end
+			end			
+		else
+			if in_range(geo_target_mob,me.mob,12) then
+				-- is the luopan enemy-only?
+				local t = options.geo_target
+				if options.geo_luopan == "Wilt" or options.geo_luopan == "Frailty" or options.geo_luopan == "Fade" or options.geo_luopan == "Malaise" or options.geo_luopan == "Slip" or options.geo_luopan == "Torpor" or options.geo_luopan == "Vex" or options.geo_luopan == "Languor" or options.geo_luopan == "Slow" or options.geo_luopan == "Paralysis" then 
+					local target = mob('bt')
+					if target then
+						cast_spell(me,'bt',"Geo-" .. options.geo_luopan)
+						return
+					end
+				else
 					cast_spell(me,t,"Geo-" .. options.geo_luopan)
 					return
-				end
+				end			
 			end
 		end
+	end
 			
-		-- does focus have an entrusted bubble?
-		if toggles[3].toggled then
-			local entrust_target_mob = mob(options.entrust_target)
-			
-			if player_can_cast(me,"Indi-" .. options.entrust_luopan) and player_can_use(me,"Entrust") and has_buff(me.buffs,584) == false then
-				if in_range(entrust_target_mob,me.mob,12) then 
-					use_ability(me,"me","Entrust")
-					return
-				end
-			end
-			if has_buff(me.buffs,584) then
-				if in_range(entrust_target_mob,me.mob,12) then 
-					cast_spell(me,options.entrust_target,"Indi-" .. options.entrust_luopan)
-					return
-				end
-			end
-		end
+	-- does focus have an entrusted bubble?
+	if toggles[3].toggled then
+		local entrust_target_mob = mob(options.entrust_target)
 		
-		-- lets get on the hate list!
-		local target = windower.ffxi.get_mob_by_target('bt')
-		if target then
-			if last_target ~= target.id then
-				cast_spell(me,options.geo_target,"Cure")
-				last_target = target.id
+		if player_can_cast(me,"Indi-" .. options.entrust_luopan) and player_can_use(me,"Entrust") and has_buff(me.buffs,584) == false then
+			if in_range(entrust_target_mob,me.mob,12) then 
+				use_ability(me,"me","Entrust")
+				return
+			end
+		end
+		if has_buff(me.buffs,584) then
+			if in_range(entrust_target_mob,me.mob,12) then 
+				cast_spell(me,options.entrust_target,"Indi-" .. options.entrust_luopan)
 				return
 			end
 		end
 	end
-end
-
-function follow()
-	if toggles[6].toggled then
-		coroutine.schedule(follow, 0.25)
-		
-		local target = mob(options.follow_target)
-		local me = mob('me')
-		
-		if target and me and distance_from(target,me) >= options.follow_range then
-			runto(me,target,options.follow_range)
-			moving = true
+	
+	local target = mob('bt')
+	-- there is a battle target
+	if target then
+		-- this is a new battle target
+		if target.id ~= hate_target.id then
+			hate_target.id = target.id
+			hate_target.on_hate_list = false 
+			-- get on the hate list
+			cast_spell(me,options.geo_target,"Cure")
+			return
 		else
-			if moving == true then
-				windower.ffxi.run(false)
-				moving = false
-			end
+			-- are you on the hate list?
+			if hate_target.on_hate_list == false then
+				if last_spell ~= 1 then
+					cast_spell(me,options.geo_target,"Cure")
+				else
+					hate_target.on_hate_list = true
+				end
+			end			
 		end
 	end
 end
@@ -364,6 +363,19 @@ function ini()
 	toggle_button(gui[4],false,'max','min')
 	resize_gui()
 
+	-- enable following thread
+	if toggles[6].toggled then
+		windower.send_command("fastfollow " .. options.follow_target)
+	else
+		windower.send_command("fastfollow stop")
+	end
+	
+	ac = windower.register_event('addon command', addon_command)
+	m = windower.register_event('mouse', mouse)	
+	
+	print(_addon.name,"gGEO Loaded.")
+	loaded = true
+
 	-- set the config status of the 'on' button
 	if settings.active then
 		gui[3].toggled = true
@@ -371,17 +383,7 @@ function ini()
 	else
 		gui[3].toggled = false
 	end	
-	toggle_button(gui[3],false,'on_large','off_large')
-	
-	-- enable following thread
-	if toggles[6].toggled then
-		follow()
-	end
-	
-	ac = windower.register_event('addon command', addon_command)
-	m = windower.register_event('mouse', mouse)	
-	
-	print(_addon.name,"Loading gGEO.")
+	toggle_button(gui[3],false,'on_large','off_large')	
 end
 
 function destroy()
@@ -407,17 +409,23 @@ function destroy()
 	
 	windower.unregister_event(ac)
 	windower.unregister_event(m)
+	
+	loaded = false
 end
 
 windower.register_event('load', function()
 	if me.main_job == "GEO" or me.sub_job == "GEO" then
-		ini()
+		if loaded == false then
+			ini()
+		end
 	end
 end)
 
 windower.register_event('job change', function(main_job_id, main_job_level,sub_job_id,sub_job_level)
 	if main_job_id == 21 or sub_job_id == 21 then
-		ini()
+		if loaded == false then
+			ini()
+		end
 	else
 		destroy()
 	end
@@ -468,8 +476,10 @@ function mouse(type, x, y, delta, blocked)
 			if type == 2 then
 				toggle_button(btn,true,'on','off')
 					
-				if btn.anchor == 15 then
-					follow()
+				if btn.anchor == 15 and btn.toggled then
+					windower.send_command("fastfollow " .. options.follow_target)
+				elseif btn.anchor == 15 and btn.toggled == false then
+					windower.send_command("fastfollow stop")
 				end
 			end
 			return true
