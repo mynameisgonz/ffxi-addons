@@ -5,7 +5,7 @@
 		<td>
 			<p>gGEO is a windower addon that automates bots for multi-box purposes. The addon supports profiles to quickly switch between settings. On-screen button presses allows you to start/stop and manage the addon without chat commands. You can also minimize the addon to reclaim screen space.</p>
 			<h3>Installation Instructions</h3>
-			<p>Place the gGEO folder in your windower addons folders. <br/><b>NOTE:</b> Please make sure to download <a href="https://github.com/mynameisgonz/ffxi-addons/tree/main/libs/gLibs">gLibs</a> and place in the addons/libs folder as my addons require them!<br><b>FOLLOW MECHANIC UTILIZES FASTFOLLOW. PLEASE HAVE THAT INSTALLED IN ORDER FOR THE FOLLOW MECHANIC TO WORK</b></br></p>
+			<p>Place the gGEO folder in your windower addons folders. <br/><b>NOTE:</b> Please make sure to download <a href="https://github.com/mynameisgonz/ffxi-addons/tree/main/libs/gLibs">gLibs</a> and place in the addons/libs folder as my addons require them!<br><b>FOLLOW MECHANIC UTILIZES <a href="https://github.com/DiscipleOfEris/FastFollow">FASTFOLLOW</a>. PLEASE HAVE THAT INSTALLED IN ORDER FOR THE FOLLOW MECHANIC TO WORK</b></br></p>
 			<h3>Available Commands</h3>
 			<table>
 				<tr>
